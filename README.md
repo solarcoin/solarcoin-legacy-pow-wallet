@@ -10,9 +10,9 @@ Scrypt Proof of Work
 
 1440 Block Difficulty Adjustments
 
-RPC PORT = 18188
+RPC PORT = 18181
 
-P2P PORT = 18181
+P2P PORT = 18188
 
 Public Key: 18
 
