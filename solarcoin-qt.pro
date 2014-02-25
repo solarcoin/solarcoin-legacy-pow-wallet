@@ -10,7 +10,7 @@ windows:LIBS += -lshlwapi
 LIBS += $$join(BOOST_LIB_PATH,,-L,) $$join(BDB_LIB_PATH,,-L,) $$join(OPENSSL_LIB_PATH,,-L,) $$join(QRENCODE_LIB_PATH,,-L,)
 LIBS += -lssl -lcrypto -ldb_cxx$$BDB_LIB_SUFFIX
 windows:LIBS += -lws2_32 -lole32 -loleaut32 -luuid -lgdi32
-LIBS += -lboost_system -lboost_filesystem -lboost_program_options -lboost_thread
+LIBS += -lboost_system -lboost_filesystem -lboost_program_options
 BOOST_LIB_SUFFIX=
 BOOST_INCLUDE_PATH=C:/deps/boost
 BOOST_LIB_PATH=C:/deps/boost/stage/lib
@@ -20,6 +20,22 @@ OPENSSL_INCLUDE_PATH=c:/deps/ssl/include
 OPENSSL_LIB_PATH=c:/deps/ssl
 MINIUPNPC_LIB_PATH=c:/deps/miniupnpc
 MINIUPNPC_INCLUDE_PATH=c:/deps
+
+macx {
+  BOOST_LIB_SUFFIX =-mt
+  BOOST_THREAD_LIB_SUFFIX =-mt
+  BOOST_INCLUDE_PATH=/opt/local/include
+  BOOST_LIB_PATH=/opt/local/lib
+  BDB_INCLUDE_PATH=/opt/local/include/db48
+  BDB_LIB_PATH=/opt/local/lib/db48
+  BDB_LIB_SUFFIX = -4.8
+  OPENSSL_INCLUDE_PATH=/usr/include/openssl
+  OPENSSL_LIB_PATH=/usr/lib
+  MINIUPNPC_LIB_PATH=/opt/local/include/miniupnpc
+  MINIUPNPC_INCLUDE_PATH=/opt/local/lib
+}  
+  
+
 
 OBJECTS_DIR = build
 MOC_DIR = build
@@ -346,7 +362,7 @@ macx:OBJECTIVE_SOURCES += src/qt/macdockiconhandler.mm
 macx:LIBS += -framework Foundation -framework ApplicationServices -framework AppKit
 macx:DEFINES += MAC_OSX MSG_NOSIGNAL=0
 macx:ICON = src/qt/res/icons/bitcoin.icns
-macx:TARGET = "Suncoin-Qt"
+macx:TARGET = "Solarcoin-Qt"
 
 # Set libraries and includes at end, to use platform-defined defaults if not overridden
 INCLUDEPATH += $$BOOST_INCLUDE_PATH $$BDB_INCLUDE_PATH $$OPENSSL_INCLUDE_PATH $$QRENCODE_INCLUDE_PATH
