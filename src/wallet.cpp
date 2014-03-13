@@ -1105,7 +1105,7 @@ bool CWallet::CreateTransaction(const vector<pair<CScript, int64> >& vecSend, CW
         CTxDB txdb("r");
         {
             nFeeRet = nTransactionFee;
-            loop
+            forloop
             {
                 wtxNew.vin.clear();
                 wtxNew.vout.clear();

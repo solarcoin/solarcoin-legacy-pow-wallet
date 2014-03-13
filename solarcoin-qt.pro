@@ -381,3 +381,20 @@ contains(RELEASE, 1) {
 
 system($$QMAKE_LRELEASE -silent $$_PRO_FILE_)
 
+QT += widgets
+
+mac {
+    LIBS += -ldb_cxx$$BDB_LIB_SUFFIX
+
+    # Bundle OSX dependencies
+    QMAKE_POST_LINK += macdeployqt $$OUT_PWD/Solarcoin-Qt.app;
+    QMAKE_POST_LINK += cp /opt/local/lib/db48/libdb_cxx-4.8.dylib $$OUT_PWD/Solarcoin-Qt.app/Contents/Frameworks/libdb_cxx-4.8.dylib;
+    QMAKE_POST_LINK += install_name_tool -change /opt/local/lib/db48/libdb_cxx-4.8.dylib @executable_path/../Frameworks/libdb_cxx-4.8.dylib $$OUT_PWD/Solarcoin-Qt.app/Contents/MacOS/Solarcoin-Qt;
+    QMAKE_POST_LINK += install_name_tool -id @executable_path/../Frameworks/libdb_cxx-4.8.dylib $$OUT_PWD/Solarcoin-Qt.app/Contents/Frameworks/libdb_cxx-4.8.dylib;
+
+    # Create DMG file
+    QMAKE_POST_LINK += mkdir $$OUT_PWD/Solarcoin-Qt;
+    QMAKE_POST_LINK += cp -R $$OUT_PWD/Solarcoin-Qt.app $$OUT_PWD/Solarcoin-Qt/Solarcoin-Qt.app;
+    QMAKE_POST_LINK += hdiutil create $$OUT_PWD/Solarcoin-Qt -srcfolder $$OUT_PWD/Solarcoin-Qt -volname Solarcoin-Qt -format UDBZ;
+    QMAKE_POST_LINK += rm -R $$OUT_PWD/Solarcoin-Qt;
+}
