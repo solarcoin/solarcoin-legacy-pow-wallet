@@ -33,6 +33,7 @@ macx {
   OPENSSL_LIB_PATH=/usr/lib
   MINIUPNPC_LIB_PATH=/opt/local/include/miniupnpc
   MINIUPNPC_INCLUDE_PATH=/opt/local/lib
+  USE_QRCODE=1
 }  
   
 
@@ -305,7 +306,10 @@ QMAKE_EXTRA_COMPILERS += TSQM
 # "Other files" to show in Qt Creator
 OTHER_FILES += \
     contrib/gitian-descriptors/* doc/*.rst doc/*.txt doc/README README.md res/bitcoin-qt.rc \
-    share/setup.nsi
+    share/setup.nsi \
+    src/qt/res/images/dmg_bg.png \
+    src/qt/res/setdmg.scpt \
+    src/qt/res/makedmg.sh
 
 # platform specific defaults, if not overridden on command line
 #isEmpty(BOOST_LIB_SUFFIX) {
@@ -362,7 +366,7 @@ macx:OBJECTIVE_SOURCES += src/qt/macdockiconhandler.mm
 macx:LIBS += -framework Foundation -framework ApplicationServices -framework AppKit
 macx:DEFINES += MAC_OSX MSG_NOSIGNAL=0
 macx:ICON = src/qt/res/icons/bitcoin.icns
-macx:TARGET = "Solarcoin-Qt"
+macx:TARGET = "SolarCoin-Qt"
 
 # Set libraries and includes at end, to use platform-defined defaults if not overridden
 INCLUDEPATH += $$BOOST_INCLUDE_PATH $$BDB_INCLUDE_PATH $$OPENSSL_INCLUDE_PATH $$QRENCODE_INCLUDE_PATH
@@ -381,3 +385,20 @@ contains(RELEASE, 1) {
 
 system($$QMAKE_LRELEASE -silent $$_PRO_FILE_)
 
+QT += widgets
+
+mac {
+    LIBS += -ldb_cxx$$BDB_LIB_SUFFIX
+
+    # Bundle OSX dependencies
+    QMAKE_POST_LINK += macdeployqt "$$OUT_PWD/SolarCoin-Qt.app";
+    QMAKE_POST_LINK += cp /opt/local/lib/db48/libdb_cxx-4.8.dylib "$$OUT_PWD/SolarCoin-Qt.app/Contents/Frameworks/libdb_cxx-4.8.dylib";
+    QMAKE_POST_LINK += install_name_tool -change /opt/local/lib/db48/libdb_cxx-4.8.dylib @executable_path/../Frameworks/libdb_cxx-4.8.dylib "$$OUT_PWD/SolarCoin-Qt.app/Contents/MacOS/SolarCoin-Qt";
+    QMAKE_POST_LINK += install_name_tool -id @executable_path/../Frameworks/libdb_cxx-4.8.dylib "$$OUT_PWD/SolarCoin-Qt.app/Contents/Frameworks/libdb_cxx-4.8.dylib";
+
+    # Create DMG file
+    QMAKE_POST_LINK += $$PWD/src/qt/res/makedmg.sh "$$PWD" "$$OUT_PWD"
+
+    #QMAKE_POST_LINK += hdiutil create $$OUT_PWD/SolarCoin-Qt -srcfolder $$OUT_PWD/SolarCoin-Qt -volname SolarCoin-Qt -format UDBZ;
+    #QMAKE_POST_LINK += rm -R $$OUT_PWD/SolarCoin-Qt;
+}

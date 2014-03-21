@@ -36,7 +36,7 @@ static const unsigned int MAX_TX_COMMENT_LEN_V2 = 528;
 static const unsigned int TX_COMMENT_V2_HEIGHT = 340000;
 static const int64 MIN_TX_FEE = 10000000;
 static const int64 MIN_RELAY_TX_FEE = MIN_TX_FEE;
-static const int64 MAX_MONEY = 1000000000000 * COIN; 
+static const int64 MAX_MONEY = (long) 1000000000000 * (long) COIN;
 inline bool MoneyRange(int64 nValue) { return (nValue >= 0 && nValue <= MAX_MONEY); }
 static const int COINBASE_MATURITY = 10;
 // Threshold for nLockTime: below this value it is interpreted as block number, otherwise as UNIX timestamp.
