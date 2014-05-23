@@ -187,7 +187,7 @@ void WalletTxToJSON(const CWalletTx& wtx, Object& entry)
     }
     entry.push_back(Pair("txid", wtx.GetHash().GetHex()));
     entry.push_back(Pair("time", (boost::int64_t)wtx.GetTxTime()));
-	entry.push_back(Pair("tx-comment", wtx.strTxComment));
+    entry.push_back(Pair("tx-comment", wtx.strTxComment));
     BOOST_FOREACH(const PAIRTYPE(string,string)& item, wtx.mapValue)
         entry.push_back(Pair(item.first, item.second));
 }
@@ -314,7 +314,7 @@ Value getdifficulty(const Array& params, bool fHelp)
 }
 
 
-// Litecoin: Return average network hashes per second based on last number of blocks.
+// SolarCoin: Return average network hashes per second based on last number of blocks.
 Value GetNetworkHashPS(int lookup) {
     if (pindexBest == NULL)
         return 0;
@@ -458,7 +458,7 @@ Value getnewaddress(const Array& params, bool fHelp)
     if (fHelp || params.size() > 1)
         throw runtime_error(
             "getnewaddress [account]\n"
-            "Returns a new SolarCoin address for receiving payments.  "
+            "Returns a new SolarCoin address for receiving payments. "
             "If [account] is specified (recommended), it is added to the address book "
             "so payments received with the address will be credited to [account].");
 
@@ -662,7 +662,7 @@ Value sendtoaddress(const Array& params, bool fHelp)
         wtx.mapValue["comment"] = params[2].get_str();
     if (params.size() > 3 && params[3].type() != null_type && !params[3].get_str().empty())
         wtx.mapValue["to"]      = params[3].get_str();
-		
+
     // Transaction comment
 	std::string txcomment;
     if (params.size() > 4 && params[4].type() != null_type && !params[4].get_str().empty())
@@ -1044,7 +1044,7 @@ Value sendmany(const Array& params, bool fHelp)
 
     CWalletTx wtx;
 	std::string strTxComment;
-	
+
     wtx.strFromAccount = strAccount;
     if (params.size() > 3 && params[3].type() != null_type && !params[3].get_str().empty())
         wtx.mapValue["comment"] = params[3].get_str();
@@ -1096,22 +1096,13 @@ Value sendmany(const Array& params, bool fHelp)
     return wtx.GetHash().GetHex();
 }
 
-Value addmultisigaddress(const Array& params, bool fHelp)
+//
+// Used by addmultisigaddress / createmultisig:
+//
+static CScript _createmultisig(const Array& params)
 {
-    if (fHelp || params.size() < 2 || params.size() > 3)
-    {
-        string msg = "addmultisigaddress <nrequired> <'[\"key\",\"key\"]'> [account]\n"
-            "Add a nrequired-to-sign multisignature address to the wallet\"\n"
-            "each key is a SolarCoin address or hex-encoded public key\n"
-            "If [account] is specified, assign address to [account].";
-        throw runtime_error(msg);
-    }
-
     int nRequired = params[0].get_int();
     const Array& keys = params[1].get_array();
-    string strAccount;
-    if (params.size() > 2)
-        strAccount = AccountFromValue(params[2]);
 
     // Gather public keys
     if (nRequired < 1)
@@ -1154,15 +1145,57 @@ Value addmultisigaddress(const Array& params, bool fHelp)
             throw runtime_error(" Invalid public key: "+ks);
         }
     }
+    CScript result;
+    result.SetMultisig(nRequired, pubkeys);
+    return result;
+}
+
+Value addmultisigaddress(const Array& params, bool fHelp)
+{
+    if (fHelp || params.size() < 2 || params.size() > 3)
+    {
+        string msg = "addmultisigaddress <nrequired> <'[\"key\",\"key\"]'> [account]\n"
+            "Add a nrequired-to-sign multisignature address to the wallet\"\n"
+            "each key is a SolarCoin address or hex-encoded public key\n"
+            "If [account] is specified, assign address to [account].";
+        throw runtime_error(msg);
+    }
+
+    string strAccount;
+    if (params.size() > 2)
+        strAccount = AccountFromValue(params[2]);
 
     // Construct using pay-to-script-hash:
-    CScript inner;
-    inner.SetMultisig(nRequired, pubkeys);
+    CScript inner = _createmultisig(params);
     CScriptID innerID = inner.GetID();
     pwalletMain->AddCScript(inner);
 
     pwalletMain->SetAddressBookName(innerID, strAccount);
     return CBitcoinAddress(innerID).ToString();
+}
+
+Value createmultisig(const Array& params, bool fHelp)
+{
+    if (fHelp || params.size() < 2 || params.size() > 2)
+    {
+        string msg = "createmultisig <nrequired> <'[\"key\",\"key\"]'>\n"
+            "Creates a multi-signature address and returns a json object\n"
+            "with keys:\n"
+            "address : SolarCoin address\n"
+            "redeemScript : hex-encoded redemption script";
+        throw runtime_error(msg);
+    }
+
+    // Construct using pay-to-script-hash:
+    CScript inner = _createmultisig(params);
+    CScriptID innerID = inner.GetID();
+    CBitcoinAddress address(innerID);
+
+    Object result;
+    result.push_back(Pair("address", address.ToString()));
+    result.push_back(Pair("redeemScript", HexStr(inner.begin(), inner.end())));
+
+    return result;
 }
 
 
@@ -2383,6 +2416,7 @@ static const CRPCCommand vRPCCommands[] =
     { "sendmany",               &sendmany,               false },
     { "addmultisigaddress",     &addmultisigaddress,     false },
     { "getrawmempool",          &getrawmempool,          true },
+    { "createmultisig",         &createmultisig,         true },
     { "getblock",               &getblock,               false },
     { "getblockhash",           &getblockhash,           false },
     { "gettransaction",         &gettransaction,         false },
@@ -3288,6 +3322,8 @@ Array RPCConvertValues(const std::string &strMethod, const std::vector<std::stri
     if (strMethod == "sendmany"               && n > 2) ConvertTo<boost::int64_t>(params[2]);
     if (strMethod == "addmultisigaddress"     && n > 0) ConvertTo<boost::int64_t>(params[0]);
     if (strMethod == "addmultisigaddress"     && n > 1) ConvertTo<Array>(params[1]);
+    if (strMethod == "createmultisig"         && n > 0) ConvertTo<boost::int64_t>(params[0]);
+    if (strMethod == "createmultisig"         && n > 1) ConvertTo<Array>(params[1]);    
     if (strMethod == "listunspent"            && n > 0) ConvertTo<boost::int64_t>(params[0]);
     if (strMethod == "listunspent"            && n > 1) ConvertTo<boost::int64_t>(params[1]);
     if (strMethod == "getrawtransaction"      && n > 1) ConvertTo<boost::int64_t>(params[1]);
