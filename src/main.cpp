@@ -843,9 +843,8 @@ static const int64 nTargetTimespan_Version1 = 24 * 60 * 60; // SolarCoin: 24 Hou
 static const int64 nTargetSpacing = 60 ; // SolarCoin: 1 Minute Blocks
 static const int64 nInterval_Version1 = nTargetTimespan_Version1 / nTargetSpacing; // SolarCoin: 1440 blocks
 
-static const int64 nHeight_Version2 = 208440;
-static const int64 nInterval_Version2 = 15;
-static const int64 nTargetTimespan_Version2 = nInterval_Version2 * nTargetSpacing; // 10 minutes
+//block to apply patch
+static const int64_t DiffChangeBlock = 200000;
 
 //
 // minimum amount of work that could possibly be required nTime after
@@ -883,15 +882,14 @@ unsigned int static GetNextWorkRequired(const CBlockIndex* pindexLast, const CBl
     unsigned int nInterval;
     unsigned int nTargetTimespan;
     
-    if (pindexLast->nHeight+1 < nHeight_Version2)
-    {
-        nInterval = nInterval_Version1;
-        nTargetTimespan = nTargetTimespan_Version1;
-    }
-    else
-    {
-        nInterval = nInterval_Version2;
-        nTargetTimespan = nTargetTimespan_Version2;
+    nInterval = nInterval_Version1;
+    nTargetTimespan = nTargetTimespan_Version1;
+    
+    
+    if (nHeight >= DiffChangeBlock) {
+        nTargetTimespan = 60 //1 min
+        nInterval = nTargetTimespan / nTargetSpacing; //60/60 = 1 block
+        //target timespan remains the same, 1 min
     }
         
     // Only change once per interval
@@ -936,6 +934,14 @@ unsigned int static GetNextWorkRequired(const CBlockIndex* pindexLast, const CBl
         nActualTimespan = nTargetTimespan/4;
     if (nActualTimespan > nTargetTimespan*4)
         nActualTimespan = nTargetTimespan*4;
+    
+    if (nHeight >= DiffChangeBlock) //courtesy RealSolid and WDC
+    {
+        // amplitude filter - thanks to daft27 for this code
+        nActualTimespan = nTargetTimespan + (nActualTimespan - nTargetTimespan)/8;
+        if (nActualTimespan < (nTargetTimespan - (nTargetTimespan/4)) ) nActualTimespan = (nTargetTimespan - (nTargetTimespan/4));
+        if (nActualTimespan > (nTargetTimespan + (nTargetTimespan/2)) ) nActualTimespan = (nTargetTimespan + (nTargetTimespan/2));
+    }
 
     // Retarget
     CBigNum bnNew;
