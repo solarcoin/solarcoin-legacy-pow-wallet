@@ -893,7 +893,7 @@ unsigned int static GetNextWorkRequired(const CBlockIndex* pindexLast, const CBl
     
     
     if (nHeight >= DiffChangeBlock) {
-        nTargetTimespan = 60 //1 min
+        nTargetTimespan = 60; //1 min
         nInterval = nTargetTimespan / nTargetSpacing; //60/60 = 1 block
         //target timespan remains the same, 1 min
     }
