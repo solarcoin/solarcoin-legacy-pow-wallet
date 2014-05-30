@@ -843,6 +843,11 @@ static const int64 nTargetTimespan_Version1 = 24 * 60 * 60; // SolarCoin: 24 Hou
 static const int64 nTargetSpacing = 60 ; // SolarCoin: 1 Minute Blocks
 static const int64 nInterval_Version1 = nTargetTimespan_Version1 / nTargetSpacing; // SolarCoin: 1440 blocks
 
+//this is used in computeminwork but no longer in getnextwork
+static const int64 nHeight_Version2 = 208440;
+static const int64 nInterval_Version2 = 15;
+static const int64 nTargetTimespan_Version2 = nInterval_Version2 * nTargetSpacing; // 15 minutes
+
 //block to apply patch
 static const int64_t DiffChangeBlock = 200000;
 
@@ -902,6 +907,8 @@ unsigned int static GetNextWorkRequired(const CBlockIndex* pindexLast, const CBl
             // then allow mining of a min-difficulty block.
             if (pblock->nTime > pindexLast->nTime + nTargetSpacing*2)
                 return nProofOfWorkLimit;
+            
+            /* 5/30 - temporarily removing to test difficulty retargeting
             else
             {
                 // Return the last non-special-min-difficulty-rules-block
@@ -909,7 +916,7 @@ unsigned int static GetNextWorkRequired(const CBlockIndex* pindexLast, const CBl
                 while (pindex->pprev && pindex->nHeight % nInterval != 0 && pindex->nBits == nProofOfWorkLimit)
                     pindex = pindex->pprev;
                 return pindex->nBits;
-            }
+            } */
         }
 
         return pindexLast->nBits;
