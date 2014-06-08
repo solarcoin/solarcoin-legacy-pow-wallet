@@ -2006,7 +2006,7 @@ bool LoadBlockIndex(bool fAllowNew)
         pchMessageStart[1] = 0xc0;
         pchMessageStart[2] = 0x5a;
         pchMessageStart[3] = 0xf2;
-        hashGenesisBlock = uint256("0x4d63090ae07ced3c1d85f8ad6579bcdc913ffaa184a63e45797f8c00dbd34fb0");
+        hashGenesisBlock = uint256("0x0xedcf32dbfd327fe7f546d3a175d91b05e955ec1224e087961acc9a2aa8f592ee");
     }
 
     //
@@ -2026,7 +2026,7 @@ bool LoadBlockIndex(bool fAllowNew)
             return false;
 
         // Genesis block
-        const char* pszTimestamp = "One Megawatt Hour, digishield diff algo";
+        const char* pszTimestamp = "One Megawatt Hour";
         CTransaction txNew;
         txNew.vin.resize(1);
         txNew.vout.resize(1);
@@ -2039,9 +2039,9 @@ bool LoadBlockIndex(bool fAllowNew)
         block.hashPrevBlock = 0;
         block.hashMerkleRoot = block.BuildMerkleTree();
         block.nVersion = 1;
-        block.nTime    = 1402247399;
+        block.nTime    = 1384473600;
         block.nBits    = 0x1e0ffff0;
-        block.nNonce   = 968994;
+        block.nNonce   = 1397766;
 
         if (fTestNet)
         {
@@ -2056,7 +2056,7 @@ bool LoadBlockIndex(bool fAllowNew)
         assert(block.hashMerkleRoot == uint256("0xcf1251662506f29c21cd27b9920e5efbad41bd5e0566005bc73558b458ec2591"));
 
         // If genesis block hash does not match, then generate new genesis hash.
-        if (true && block.GetHash() != hashGenesisBlock)
+        if (false && block.GetHash() != hashGenesisBlock)
         {
             printf("Searching for genesis block...\n");
             // This will figure out a valid hash and Nonce if you're
