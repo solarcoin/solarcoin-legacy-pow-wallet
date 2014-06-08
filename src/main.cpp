@@ -30,7 +30,7 @@ CTxMemPool mempool;
 unsigned int nTransactionsUpdated = 0;
 
 map<uint256, CBlockIndex*> mapBlockIndex;
-uint256 hashGenesisBlock("0xedcf32dbfd327fe7f546d3a175d91b05e955ec1224e087961acc9a2aa8f592ee");
+uint256 hashGenesisBlock("0x4d63090ae07ced3c1d85f8ad6579bcdc913ffaa184a63e45797f8c00dbd34fb0");
 static CBigNum bnProofOfWorkLimit(~uint256(0) >> 20); // SolarCoin: starting difficulty is 1 / 2^12
 CBlockIndex* pindexGenesisBlock = NULL;
 int nBestHeight = -1;
@@ -2041,22 +2041,22 @@ bool LoadBlockIndex(bool fAllowNew)
         block.nVersion = 1;
         block.nTime    = 1402247399;
         block.nBits    = 0x1e0ffff0;
-        block.nNonce   = 1397766;
+        block.nNonce   = 440824;
 
         if (fTestNet)
         {
             block.nTime    = 1402247399;
-            block.nNonce   = 0;
+            block.nNonce   = 440824;
         }
 
         //// debug print
         printf("%s\n", block.GetHash().ToString().c_str());
         printf("%s\n", hashGenesisBlock.ToString().c_str());
         printf("%s\n", block.hashMerkleRoot.ToString().c_str());
-        assert(block.hashMerkleRoot == uint256("0x33ecdb1985425f576c65e2c85d7983edc6207038a2910fefaf86cfb4e53185a3"));
+        assert(block.hashMerkleRoot == uint256("0xcf1251662506f29c21cd27b9920e5efbad41bd5e0566005bc73558b458ec2591"));
 
         // If genesis block hash does not match, then generate new genesis hash.
-        if (false && block.GetHash() != hashGenesisBlock)
+        if (true && block.GetHash() != hashGenesisBlock)
         {
             printf("Searching for genesis block...\n");
             // This will figure out a valid hash and Nonce if you're
