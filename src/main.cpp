@@ -30,7 +30,7 @@ CTxMemPool mempool;
 unsigned int nTransactionsUpdated = 0;
 
 map<uint256, CBlockIndex*> mapBlockIndex;
-uint256 hashGenesisBlock("0x4d63090ae07ced3c1d85f8ad6579bcdc913ffaa184a63e45797f8c00dbd34fb0");
+uint256 hashGenesisBlock("0xedcf32dbfd327fe7f546d3a175d91b05e955ec1224e087961acc9a2aa8f592ee");
 static CBigNum bnProofOfWorkLimit(~uint256(0) >> 20); // SolarCoin: starting difficulty is 1 / 2^12
 CBlockIndex* pindexGenesisBlock = NULL;
 int nBestHeight = -1;
