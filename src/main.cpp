@@ -2026,7 +2026,7 @@ bool LoadBlockIndex(bool fAllowNew)
             return false;
 
         // Genesis block
-        const char* pszTimestamp = "One Megawatt Hour";
+        const char* pszTimestamp = "One Megawatt Hour, digishield diff algo";
         CTransaction txNew;
         txNew.vin.resize(1);
         txNew.vout.resize(1);
@@ -2039,13 +2039,13 @@ bool LoadBlockIndex(bool fAllowNew)
         block.hashPrevBlock = 0;
         block.hashMerkleRoot = block.BuildMerkleTree();
         block.nVersion = 1;
-        block.nTime    = 1384473600;
+        block.nTime    = 1402247399;
         block.nBits    = 0x1e0ffff0;
         block.nNonce   = 1397766;
 
         if (fTestNet)
         {
-            block.nTime    = 1371387277;
+            block.nTime    = 1402247399;
             block.nNonce   = 0;
         }
 
