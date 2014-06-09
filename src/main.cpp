@@ -849,7 +849,7 @@ static const int64 nInterval_Version2 = 15;
 static const int64 nTargetTimespan_Version2 = nInterval_Version2 * nTargetSpacing; // 15 minutes
 
 //block to apply patch
-static const int64_t DiffChangeBlock = 200000;
+static const int64_t DiffChangeBlock = 1;
 
 //
 // minimum amount of work that could possibly be required nTime after
