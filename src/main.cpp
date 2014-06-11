@@ -850,7 +850,7 @@ static const int64 nTargetTimespan_Version2 = nInterval_Version2 * nTargetSpacin
 
 //block to apply patch
 //CHANGE FOR PRODUCTION!
-static const int64_t DiffChangeBlock = 1;
+static const int64_t DiffChangeBlock = 3000;
 
 //
 // minimum amount of work that could possibly be required nTime after
