@@ -905,20 +905,21 @@ unsigned int static GetNextWorkRequired(const CBlockIndex* pindexLast, const CBl
         // Special difficulty rule for testnet:
         if (fTestNet)
         {
-            // If the new block's timestamp is more than 2* 10 minutes
+            // If the new block's timestamp is more than 2* 60 seconds
             // then allow mining of a min-difficulty block.
             if (pblock->nTime > pindexLast->nTime + nTargetSpacing*2)
                 return nProofOfWorkLimit;
             
-            /* 5/30 - temporarily removing to test difficulty retargeting
-            else
+            // 5/30 - temporarily removing for blocks > diffchangeblock to test difficulty retargeting
+            //else
+            else if (nHeight < DiffChangeBlock) // 
             {
                 // Return the last non-special-min-difficulty-rules-block
                 const CBlockIndex* pindex = pindexLast;
                 while (pindex->pprev && pindex->nHeight % nInterval != 0 && pindex->nBits == nProofOfWorkLimit)
                     pindex = pindex->pprev;
                 return pindex->nBits;
-            } */
+            } 
         }
 
         return pindexLast->nBits;
