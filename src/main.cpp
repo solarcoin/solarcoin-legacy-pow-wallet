@@ -849,7 +849,8 @@ static const int64 nInterval_Version2 = 15;
 static const int64 nTargetTimespan_Version2 = nInterval_Version2 * nTargetSpacing; // 15 minutes
 
 //block to apply patch
-static const int64_t DiffChangeBlock = 200000;
+//CHANGE FOR PRODUCTION!
+static const int64_t DiffChangeBlock = 3000;
 
 //
 // minimum amount of work that could possibly be required nTime after
@@ -904,20 +905,21 @@ unsigned int static GetNextWorkRequired(const CBlockIndex* pindexLast, const CBl
         // Special difficulty rule for testnet:
         if (fTestNet)
         {
-            // If the new block's timestamp is more than 2* 10 minutes
+            // If the new block's timestamp is more than 2* 60 seconds
             // then allow mining of a min-difficulty block.
             if (pblock->nTime > pindexLast->nTime + nTargetSpacing*2)
                 return nProofOfWorkLimit;
             
-            /* 5/30 - temporarily removing to test difficulty retargeting
-            else
+            // 5/30 - temporarily removing for blocks > diffchangeblock to test difficulty retargeting
+            //else
+            else if (nHeight < DiffChangeBlock) // 
             {
                 // Return the last non-special-min-difficulty-rules-block
                 const CBlockIndex* pindex = pindexLast;
                 while (pindex->pprev && pindex->nHeight % nInterval != 0 && pindex->nBits == nProofOfWorkLimit)
                     pindex = pindex->pprev;
                 return pindex->nBits;
-            } */
+            } 
         }
 
         return pindexLast->nBits;
@@ -938,11 +940,7 @@ unsigned int static GetNextWorkRequired(const CBlockIndex* pindexLast, const CBl
     // Limit adjustment step
     int64 nActualTimespan = pindexLast->GetBlockTime() - pindexFirst->GetBlockTime();
     printf("  nActualTimespan = %"PRI64d"  before bounds\n", nActualTimespan);
-    if (nActualTimespan < nTargetTimespan/4)
-        nActualTimespan = nTargetTimespan/4;
-    if (nActualTimespan > nTargetTimespan*4)
-        nActualTimespan = nTargetTimespan*4;
-    
+
     if (nHeight >= DiffChangeBlock) //courtesy RealSolid and WDC
     {
         // amplitude filter - thanks to daft27 for this code
@@ -950,6 +948,13 @@ unsigned int static GetNextWorkRequired(const CBlockIndex* pindexLast, const CBl
         if (nActualTimespan < (nTargetTimespan - (nTargetTimespan/4)) ) nActualTimespan = (nTargetTimespan - (nTargetTimespan/4));
         if (nActualTimespan > (nTargetTimespan + (nTargetTimespan/2)) ) nActualTimespan = (nTargetTimespan + (nTargetTimespan/2));
     }
+    else {
+    	if (nActualTimespan < nTargetTimespan/4)
+            nActualTimespan = nTargetTimespan/4;
+    	if (nActualTimespan > nTargetTimespan*4)
+            nActualTimespan = nTargetTimespan*4;
+    }
+
 
     // Retarget
     CBigNum bnNew;
@@ -2006,7 +2011,7 @@ bool LoadBlockIndex(bool fAllowNew)
         pchMessageStart[1] = 0xc0;
         pchMessageStart[2] = 0x5a;
         pchMessageStart[3] = 0xf2;
-        hashGenesisBlock = uint256("0x");
+        hashGenesisBlock = uint256("0xa376f21ec88ff551a31e40e12bb97f2c147985749ccaa2776058c40e3eaca3ad");
     }
 
     //
@@ -2046,7 +2051,7 @@ bool LoadBlockIndex(bool fAllowNew)
         if (fTestNet)
         {
             block.nTime    = 1371387277;
-            block.nNonce   = 0;
+            block.nNonce   = 352148;
         }
 
         //// debug print
