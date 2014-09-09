@@ -1,5 +1,6 @@
 SolarCoin integration/staging tree
 ================================
+![solarcoin](http://i.imgur.com/BS9hSS8.png)
 
 http://www.solarcoin.org
 
