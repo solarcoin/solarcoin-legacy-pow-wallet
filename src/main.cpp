@@ -1089,10 +1089,10 @@ int64 static GetBlockValue(int nHeight, int64 nFees)
 {
     // Set starting subsidy
     int64 nSubsidy = 100 * COIN; 
-	
-	// Configure generation pool blocks 
-	if(nHeight < 99) {nSubsidy = 1000000000 * COIN;}
-	
+    
+    // Configure generation pool blocks 
+    if(nHeight < 99) {nSubsidy = 1000000000 * COIN;}
+    
     // Block subsidy reduction by SubCreative (Reduced by 3 every 1 day for 33 days. End result of 1)
     if(nHeight >= 310000) {nSubsidy = 99 * COIN;}
     if(nHeight >= 311440) {nSubsidy = 96 * COIN;}
