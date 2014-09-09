@@ -1,21 +1,16 @@
-
 #include "macdockiconhandler.h"
 
-#if QT_VERSION < 0x050000
-#include <QtGui/QMenu>
-#include <QtGui/QWidget>
-#else
 #include <QMenu>
 #include <QWidget>
-#endif
-
 #include <QTemporaryFile>
 #include <QImageWriter>
 
-extern void qt_mac_set_dock_menu(QMenu*);
-
 #undef slots
 #include <Cocoa/Cocoa.h>
+
+#if QT_VERSION < 0x050000
+extern void qt_mac_set_dock_menu(QMenu *);
+#endif
 
 @interface DockIconClickEventHandler : NSObject
 {
@@ -46,8 +41,9 @@ extern void qt_mac_set_dock_menu(QMenu*);
     Q_UNUSED(event)
     Q_UNUSED(replyEvent)
 
-    if (dockIconHandler)
+    if (dockIconHandler) {
         dockIconHandler->handleDockIconClickEvent();
+    }
 }
 
 @end
@@ -55,18 +51,26 @@ extern void qt_mac_set_dock_menu(QMenu*);
 MacDockIconHandler::MacDockIconHandler() : QObject()
 {
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-    //this->m_dockIconClickEventHandler = [[DockIconClickEventHandler alloc] initWithDockIconHandler:this];
 
-    //this->m_dummyWidget = new QWidget();
-    //this->m_dockMenu = new QMenu(this->m_dummyWidget);
-    //qt_mac_set_dock_menu(this->m_dockMenu);
+    this->m_dockIconClickEventHandler = [[DockIconClickEventHandler alloc] initWithDockIconHandler:this];
+    this->m_dummyWidget = new QWidget();
+    this->m_dockMenu = new QMenu(this->m_dummyWidget);
+    this->setMainWindow(NULL);
+#if QT_VERSION < 0x050000
+    qt_mac_set_dock_menu(this->m_dockMenu);
+#endif
     [pool release];
+}
+
+void MacDockIconHandler::setMainWindow(QMainWindow *window) {
+    this->mainWindow = window;
 }
 
 MacDockIconHandler::~MacDockIconHandler()
 {
     [this->m_dockIconClickEventHandler release];
     delete this->m_dummyWidget;
+    this->setMainWindow(NULL);
 }
 
 QMenu *MacDockIconHandler::dockMenu()
@@ -117,5 +121,11 @@ MacDockIconHandler *MacDockIconHandler::instance()
 
 void MacDockIconHandler::handleDockIconClickEvent()
 {
+    if (this->mainWindow)
+    {
+        this->mainWindow->activateWindow();
+        this->mainWindow->show();
+    }
+
     emit this->dockIconClicked();
 }
