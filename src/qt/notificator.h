@@ -1,3 +1,7 @@
+// Copyright (c) 2011-2013 The Bitcoin developers
+// Distributed under the MIT/X11 software license, see the accompanying
+// file COPYING or http://www.opensource.org/licenses/mit-license.php.
+
 #ifndef NOTIFICATOR_H
 #define NOTIFICATOR_H
 
@@ -15,6 +19,7 @@ QT_END_NAMESPACE
 class Notificator: public QObject
 {
     Q_OBJECT
+
 public:
     /** Create a new notificator.
        @note Ownership of trayIcon is not transferred to this object.
@@ -25,13 +30,12 @@ public:
     // Message class
     enum Class
     {
-        Information,         /**< Informational message */
-        Warning,             /**< Notify user of potential problem */
-        Critical             /**< An error occured */
+        Information,    /**< Informational message */
+        Warning,        /**< Notify user of potential problem */
+        Critical        /**< An error occurred */
     };
 
 public slots:
-
     /** Show notification message.
        @param[in] cls    general message class
        @param[in] title  title shown with message
@@ -46,11 +50,12 @@ public slots:
 private:
     QWidget *parent;
     enum Mode {
-        None,        /**< Ignore informational notifications, and show a modal pop-up dialog for Critical notifications. */
-        Freedesktop, /**< Use DBus org.freedesktop.Notifications */
-        QSystemTray, /**< Use QSystemTray::showMessage */
-        Growl12,        /**< Use the Growl 1.2 notification system (Mac only) */
-        Growl13        /**< Use the Growl 1.3 notification system (Mac only) */
+        None,                       /**< Ignore informational notifications, and show a modal pop-up dialog for Critical notifications. */
+        Freedesktop,                /**< Use DBus org.freedesktop.Notifications */
+        QSystemTray,                /**< Use QSystemTray::showMessage */
+        Growl12,                    /**< Use the Growl 1.2 notification system (Mac only) */
+        Growl13,                    /**< Use the Growl 1.3 notification system (Mac only) */
+        UserNotificationCenter      /**< Use the 10.8+ User Notification Center (Mac only) */
     };
     QString programName;
     Mode mode;
@@ -61,8 +66,9 @@ private:
     void notifyDBus(Class cls, const QString &title, const QString &text, const QIcon &icon, int millisTimeout);
 #endif
     void notifySystray(Class cls, const QString &title, const QString &text, const QIcon &icon, int millisTimeout);
-#ifdef Q_WS_MAC
+#ifdef Q_OS_MAC
     void notifyGrowl(Class cls, const QString &title, const QString &text, const QIcon &icon);
+    void notifyMacUserNotificationCenter(Class cls, const QString &title, const QString &text, const QIcon &icon);
 #endif
 };
 
