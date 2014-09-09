@@ -1,16 +1,20 @@
+// Copyright (c) 2011-2013 The Bitcoin developers
+// Distributed under the MIT/X11 software license, see the accompanying
+// file COPYING or http://www.opensource.org/licenses/mit-license.php.
+
 #ifndef EDITADDRESSDIALOG_H
 #define EDITADDRESSDIALOG_H
 
 #include <QDialog>
 
-QT_BEGIN_NAMESPACE
-class QDataWidgetMapper;
-QT_END_NAMESPACE
-
 namespace Ui {
     class EditAddressDialog;
 }
 class AddressTableModel;
+
+QT_BEGIN_NAMESPACE
+class QDataWidgetMapper;
+QT_END_NAMESPACE
 
 /** Dialog for editing an address and associated information.
  */
@@ -27,15 +31,17 @@ public:
     };
 
     explicit EditAddressDialog(Mode mode, QWidget *parent = 0);
-    ~EditAddressDialog();    
+    ~EditAddressDialog();
 
     void setModel(AddressTableModel *model);
     void loadRow(int row);
 
-    void accept();
-
     QString getAddress() const;
     void setAddress(const QString &address);
+
+public slots:
+    void accept();
+
 private:
     bool saveCurrentRow();
 

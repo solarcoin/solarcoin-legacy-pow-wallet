@@ -1,3 +1,7 @@
+// Copyright (c) 2011-2013 The Bitcoin developers
+// Distributed under the MIT/X11 software license, see the accompanying
+// file COPYING or http://www.opensource.org/licenses/mit-license.php.
+
 #ifndef OPTIONSDIALOG_H
 #define OPTIONSDIALOG_H
 
@@ -8,6 +12,7 @@ class OptionsDialog;
 }
 class OptionsModel;
 class MonitoredDataMapper;
+class QValidatedLineEdit;
 
 /** Preferences dialog. */
 class OptionsDialog : public QDialog
@@ -25,12 +30,17 @@ protected:
     bool eventFilter(QObject *object, QEvent *event);
 
 private slots:
+    /* enable only apply button */
+    void enableApplyButton();
+    /* disable only apply button */
+    void disableApplyButton();
     /* enable apply button and OK button */
     void enableSaveButtons();
     /* disable apply button and OK button */
     void disableSaveButtons();
     /* set apply button and OK button state (enabled / disabled) */
     void setSaveButtonState(bool fState);
+    void on_resetButton_clicked();
     void on_okButton_clicked();
     void on_cancelButton_clicked();
     void on_applyButton_clicked();
@@ -38,9 +48,10 @@ private slots:
     void showRestartWarning_Proxy();
     void showRestartWarning_Lang();
     void updateDisplayUnit();
+    void handleProxyIpValid(QValidatedLineEdit *object, bool fState);
 
 signals:
-    void proxyIpValid(bool fValid);
+    void proxyIpValid(QValidatedLineEdit *object, bool fValid);
 
 private:
     Ui::OptionsDialog *ui;

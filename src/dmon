@@ -1,0 +1,75 @@
+#! /bin/csh
+
+set maxd=0        # max diff seen
+set mind=9999999     # min diff seen
+set curd=0       # current diff
+
+set maxc=0        # max cpu hr
+set minc=99999999     # min cpu hr
+set curc=0       # current cpu hr
+
+set maxn=0        # max network hr
+set minn=9999999999999     # min network hr
+set curn=0       # current network hr
+
+
+while 1
+
+	clear 
+	echo =====================`date`======
+	echo -n immature: \ \  
+	set trans = `./solarcoind listtransactions | grep imm | wc -l`
+	echo $trans
+	if($trans> 0) then
+		./solarcoind listtransactions |	 grep confirm 
+	endif
+
+	echo -n generated: \  
+	./solarcoind listtransactions | grep generate\" | wc -l
+
+	echo -n balance:   \   \ 
+	./solarcoind getbalance
+
+	echo -n height:\ \ \ \ \ 
+	./solarcoind getblockcount
+
+	echo -n difficulty:\ 
+	set curd = `./solarcoind getdifficulty`
+	#set divd = `echo \($curd\)\/1|bc`
+	#echo $divd
+	#set fracd = `echo \($curd\)\%1|bc`
+	#echo $fracd
+	set intd = `echo \($curd+0.5\)\/1|bc`
+	if ( $intd < $mind ) then
+		set mind = $intd
+	endif
+	if ( $intd > $maxd ) then
+		set maxd = $intd
+	endif
+	echo $curd\/$mind\/$maxd  
+	echo -n cpu hr:\  \ \ \ 
+	
+	set curc = `./solarcoind gethashespersec`
+	if ( $curc < $minc ) then
+		set minc = $curc
+	endif
+	if ( $curc > $maxc ) then
+		set maxc = $curc
+	endif
+	echo $curc\/$minc\/$maxc  
+	echo -n net hr:\  \ \ \ 
+
+	
+	set curn = `./solarcoind getnetworkhashps `
+	if ( $curn < $minn ) then
+		set minn = $curn
+	endif
+	if ( $curn > $maxn ) then
+		set maxn = $curn
+	endif
+	echo $curn\/$minn\/$maxn  
+	
+	echo -n  connections:
+	./solarcoind getconnectioncount
+	sleep 60  
+end

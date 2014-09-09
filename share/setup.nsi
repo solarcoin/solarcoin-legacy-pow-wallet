@@ -5,7 +5,7 @@ SetCompressor /SOLID lzma
 
 # General Symbol Definitions
 !define REGKEY "SOFTWARE\$(^Name)"
-!define VERSION 0.6.3
+!define VERSION 0.8.7.1
 !define COMPANY "SolarCoin project"
 !define URL http://www.solarcoin.org/
 
@@ -45,13 +45,13 @@ Var StartMenuGroup
 !insertmacro MUI_LANGUAGE English
 
 # Installer attributes
-OutFile solarcoin-0.6.3-win32-setup.exe
+OutFile solarcoin-${VERSION}-win32-setup.exe
 InstallDir $PROGRAMFILES\SolarCoin
 CRCCheck on
 XPStyle on
 BrandingText " "
 ShowInstDetails show
-VIProductVersion 0.6.3.0
+VIProductVersion ${VERSION}
 VIAddVersionKey ProductName SolarCoin
 VIAddVersionKey ProductVersion "${VERSION}"
 VIAddVersionKey CompanyName "${COMPANY}"
@@ -67,7 +67,7 @@ Section -Main SEC0000
     SetOutPath $INSTDIR
     SetOverwrite on
     File ../release/solarcoin-qt.exe
-    File /oname=license.txt ../COPYING
+    File /oname=COPYING.txt ../COPYING
     File /oname=readme.txt ../doc/README_windows.txt
     SetOutPath $INSTDIR\daemon
     File ../src/solarcoind.exe
@@ -99,9 +99,9 @@ Section -post SEC0001
     WriteRegDWORD HKCU "SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\$(^Name)" NoModify 1
     WriteRegDWORD HKCU "SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\$(^Name)" NoRepair 1
     WriteRegStr HKCR "solarcoin" "URL Protocol" ""
-    WriteRegStr HKCR "solarcoin" "" "URL:Bitcoin"
+    WriteRegStr HKCR "solarcoin" "" "URL:SolarCoin"
     WriteRegStr HKCR "solarcoin\DefaultIcon" "" $INSTDIR\solarcoin-qt.exe
-    WriteRegStr HKCR "solarcoin\shell\open\command" "" '"$INSTDIR\solarcoin-qt.exe" "$$1"'
+    WriteRegStr HKCR "solarcoin\shell\open\command" "" '"$INSTDIR\solarcoin-qt.exe" "%1"'
 SectionEnd
 
 # Macro for selecting uninstaller sections
@@ -120,7 +120,7 @@ done${UNSECTION_ID}:
 # Uninstaller sections
 Section /o -un.Main UNSEC0000
     Delete /REBOOTOK $INSTDIR\solarcoin-qt.exe
-    Delete /REBOOTOK $INSTDIR\license.txt
+    Delete /REBOOTOK $INSTDIR\COPYING.txt
     Delete /REBOOTOK $INSTDIR\readme.txt
     RMDir /r /REBOOTOK $INSTDIR\daemon
     RMDir /r /REBOOTOK $INSTDIR\src
