@@ -1094,40 +1094,40 @@ int64 static GetBlockValue(int nHeight, int64 nFees)
 	if(nHeight < 99) {nSubsidy = 1000000000 * COIN;}
 	
     // Block subsidy reduction by SubCreative (Reduced by 3 every 1 day for 33 days. End result of 1)
-    if(nHeight >= 300000) {nSubsidy = 99 * COIN;}
-    if(nHeight >= 301440) {nSubsidy = 96 * COIN;}
-    if(nHeight >= 302880) {nSubsidy = 93 * COIN;}
-    if(nHeight >= 304320) {nSubsidy = 90 * COIN;}
-    if(nHeight >= 305760) {nSubsidy = 87 * COIN;}
-    if(nHeight >= 307200) {nSubsidy = 84 * COIN;}
-    if(nHeight >= 308640) {nSubsidy = 81 * COIN;}
-    if(nHeight >= 310080) {nSubsidy = 78 * COIN;}
-    if(nHeight >= 311520) {nSubsidy = 75 * COIN;}
-    if(nHeight >= 312960) {nSubsidy = 72 * COIN;}
-    if(nHeight >= 314400) {nSubsidy = 69 * COIN;}
-    if(nHeight >= 315840) {nSubsidy = 66 * COIN;}
-    if(nHeight >= 317280) {nSubsidy = 63 * COIN;}
-    if(nHeight >= 318720) {nSubsidy = 60 * COIN;}
-    if(nHeight >= 320160) {nSubsidy = 57 * COIN;}
-    if(nHeight >= 321600) {nSubsidy = 54 * COIN;}
-    if(nHeight >= 323040) {nSubsidy = 51 * COIN;}
-    if(nHeight >= 324480) {nSubsidy = 48 * COIN;}
-    if(nHeight >= 325920) {nSubsidy = 45 * COIN;}
-    if(nHeight >= 327360) {nSubsidy = 42 * COIN;}
-    if(nHeight >= 328800) {nSubsidy = 39 * COIN;}
-    if(nHeight >= 330240) {nSubsidy = 36 * COIN;}
-    if(nHeight >= 331680) {nSubsidy = 33 * COIN;}
-    if(nHeight >= 333120) {nSubsidy = 30 * COIN;}
-    if(nHeight >= 334560) {nSubsidy = 27 * COIN;}
-    if(nHeight >= 336000) {nSubsidy = 24 * COIN;}
-    if(nHeight >= 337440) {nSubsidy = 21 * COIN;}
-    if(nHeight >= 338880) {nSubsidy = 18 * COIN;}
-    if(nHeight >= 340320) {nSubsidy = 15 * COIN;}
-    if(nHeight >= 341760) {nSubsidy = 12 * COIN;}
-    if(nHeight >= 343200) {nSubsidy = 9 * COIN;}
-    if(nHeight >= 344640) {nSubsidy = 6 * COIN;}
-    if(nHeight >= 346080) {nSubsidy = 3 * COIN;}
-    if(nHeight >= 347520) {nSubsidy = 1 * COIN;}
+    if(nHeight >= 310000) {nSubsidy = 99 * COIN;}
+    if(nHeight >= 311440) {nSubsidy = 96 * COIN;}
+    if(nHeight >= 312880) {nSubsidy = 93 * COIN;}
+    if(nHeight >= 314320) {nSubsidy = 90 * COIN;}
+    if(nHeight >= 315760) {nSubsidy = 87 * COIN;}
+    if(nHeight >= 317200) {nSubsidy = 84 * COIN;}
+    if(nHeight >= 318640) {nSubsidy = 81 * COIN;}
+    if(nHeight >= 320080) {nSubsidy = 78 * COIN;}
+    if(nHeight >= 321520) {nSubsidy = 75 * COIN;}
+    if(nHeight >= 322960) {nSubsidy = 72 * COIN;}
+    if(nHeight >= 324400) {nSubsidy = 69 * COIN;}
+    if(nHeight >= 325840) {nSubsidy = 66 * COIN;}
+    if(nHeight >= 327280) {nSubsidy = 63 * COIN;}
+    if(nHeight >= 328720) {nSubsidy = 60 * COIN;}
+    if(nHeight >= 330160) {nSubsidy = 57 * COIN;}
+    if(nHeight >= 331600) {nSubsidy = 54 * COIN;}
+    if(nHeight >= 333040) {nSubsidy = 51 * COIN;}
+    if(nHeight >= 334480) {nSubsidy = 48 * COIN;}
+    if(nHeight >= 335920) {nSubsidy = 45 * COIN;}
+    if(nHeight >= 337360) {nSubsidy = 42 * COIN;}
+    if(nHeight >= 338800) {nSubsidy = 39 * COIN;}
+    if(nHeight >= 340240) {nSubsidy = 36 * COIN;}
+    if(nHeight >= 341680) {nSubsidy = 33 * COIN;}
+    if(nHeight >= 343120) {nSubsidy = 30 * COIN;}
+    if(nHeight >= 344560) {nSubsidy = 27 * COIN;}
+    if(nHeight >= 346000) {nSubsidy = 24 * COIN;}
+    if(nHeight >= 347440) {nSubsidy = 21 * COIN;}
+    if(nHeight >= 348880) {nSubsidy = 18 * COIN;}
+    if(nHeight >= 350320) {nSubsidy = 15 * COIN;}
+    if(nHeight >= 351760) {nSubsidy = 12 * COIN;}
+    if(nHeight >= 353200) {nSubsidy = 9 * COIN;}
+    if(nHeight >= 354640) {nSubsidy = 6 * COIN;}
+    if(nHeight >= 356080) {nSubsidy = 3 * COIN;}
+    if(nHeight >= 357520) {nSubsidy = 1 * COIN;}
 
 
     // Subsidy is cut in half every 525600 blocks, which will occur approximately every 1 years
