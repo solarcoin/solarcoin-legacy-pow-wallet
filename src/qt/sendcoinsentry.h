@@ -1,3 +1,7 @@
+// Copyright (c) 2011-2013 The Bitcoin developers
+// Distributed under the MIT/X11 software license, see the accompanying
+// file COPYING or http://www.opensource.org/licenses/mit-license.php.
+
 #ifndef SENDCOINSENTRY_H
 #define SENDCOINSENTRY_H
 
@@ -26,8 +30,9 @@ public:
     bool isClear();
 
     void setValue(const SendCoinsRecipient &value);
+    void setAddress(const QString &address);
 
-    /** Set up the tab chain manually, as Qt messes up the tab chain by default in some cases (issue http://bugreports.qt.nokia.com/browse/QTBUG-10907).
+    /** Set up the tab chain manually, as Qt messes up the tab chain by default in some cases (issue https://bugreports.qt-project.org/browse/QTBUG-10907).
      */
     QWidget *setupTabChain(QWidget *prev);
 
@@ -39,6 +44,7 @@ public slots:
 
 signals:
     void removeEntry(SendCoinsEntry *entry);
+    void payAmountChanged();
 
 private slots:
     void on_deleteButton_clicked();

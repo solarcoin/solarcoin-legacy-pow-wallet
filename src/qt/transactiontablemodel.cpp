@@ -1,4 +1,9 @@
+// Copyright (c) 2011-2013 The Bitcoin developers
+// Distributed under the MIT/X11 software license, see the accompanying
+// file COPYING or http://www.opensource.org/licenses/mit-license.php.
+
 #include "transactiontablemodel.h"
+
 #include "guiutil.h"
 #include "transactionrecord.h"
 #include "guiconstants.h"
@@ -11,22 +16,20 @@
 #include "wallet.h"
 #include "ui_interface.h"
 
-#include <QLocale>
 #include <QList>
 #include <QColor>
 #include <QTimer>
 #include <QIcon>
 #include <QDateTime>
-#include <QtAlgorithms>
 
 // Amount column is right-aligned it contains numbers
 static int column_alignments[] = {
-        Qt::AlignLeft|Qt::AlignVCenter,
-        Qt::AlignLeft|Qt::AlignVCenter,
-        Qt::AlignLeft|Qt::AlignVCenter,
-        Qt::AlignLeft|Qt::AlignVCenter,
-        Qt::AlignLeft|Qt::AlignVCenter,
-        Qt::AlignLeft|Qt::AlignVCenter
+        Qt::AlignLeft|Qt::AlignVCenter, /* status */
+        Qt::AlignLeft|Qt::AlignVCenter, /* date */
+        Qt::AlignLeft|Qt::AlignVCenter, /* type */
+        Qt::AlignLeft|Qt::AlignVCenter, /* address */
+        Qt::AlignRight|Qt::AlignVCenter, /* amount */
+        Qt::AlignLeft|Qt::AlignVCenter  /* transaction comment */
     };
 
 // Comparison operator for sort/binary search of model tx list
@@ -281,7 +284,7 @@ QString TransactionTableModel::formatTxStatus(const TransactionRecord *wtx) cons
     switch(wtx->status.status)
     {
     case TransactionStatus::OpenUntilBlock:
-        status = tr("Open for %n block(s)","",wtx->status.open_for);
+        status = tr("Open for %n more block(s)","",wtx->status.open_for);
         break;
     case TransactionStatus::OpenUntilDate:
         status = tr("Open until %1").arg(GUIUtil::dateTimeStr(wtx->status.open_for));
@@ -393,11 +396,11 @@ QString TransactionTableModel::formatTxToAddress(const TransactionRecord *wtx, b
         return QString::fromStdString(wtx->address);
     case TransactionRecord::RecvWithAddress:
     case TransactionRecord::SendToAddress:
+    case TransactionRecord::Generated:
         return lookupAddress(wtx->address, tooltip);
     case TransactionRecord::SendToOther:
         return QString::fromStdString(wtx->address);
     case TransactionRecord::SendToSelf:
-    case TransactionRecord::Generated:
     default:
         return tr("(n/a)");
     }
@@ -431,13 +434,13 @@ QVariant TransactionTableModel::addressColor(const TransactionRecord *wtx) const
     {
     case TransactionRecord::RecvWithAddress:
     case TransactionRecord::SendToAddress:
+    case TransactionRecord::Generated:
         {
         QString label = walletModel->getAddressTableModel()->labelForAddress(QString::fromStdString(wtx->address));
         if(label.isEmpty())
             return COLOR_BAREADDRESS;
         } break;
     case TransactionRecord::SendToSelf:
-    case TransactionRecord::Generated:
         return COLOR_BAREADDRESS;
     default:
         break;

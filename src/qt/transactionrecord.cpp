@@ -1,3 +1,7 @@
+// Copyright (c) 2011-2013 The Bitcoin developers
+// Distributed under the MIT/X11 software license, see the accompanying
+// file COPYING or http://www.opensource.org/licenses/mit-license.php.
+
 #include "transactionrecord.h"
 
 #include "wallet.h"
@@ -9,18 +13,8 @@ bool TransactionRecord::showTransaction(const CWalletTx &wtx)
 {
     if (wtx.IsCoinBase())
     {
-        // Don't show generated coin until confirmed by at least one block after it
-        // so we don't get the user's hopes up until it looks like it's probably accepted.
-        //
-        // It is not an error when generated blocks are not accepted.  By design,
-        // some percentage of blocks, like 10% or more, will end up not accepted.
-        // This is the normal mechanism by which the network copes with latency.
-        //
-        // We display regular transactions right away before any confirmation
-        // because they can always get into some block eventually.  Generated coins
-        // are special because if their block is not accepted, they are not valid.
-        //
-        if (wtx.GetDepthInMainChain() < 2)
+        // Ensures we show generated coins / mined transactions at depth 1
+        if (!wtx.IsInMainChain())
         {
             return false;
         }
@@ -44,7 +38,6 @@ QList<TransactionRecord> TransactionRecord::decomposeTransaction(const CWallet *
     {
         txcomment = wtx.strTxComment;
     }
-    
     std::map<std::string, std::string> mapValue = wtx.mapValue;
 
     if (nNet > 0 || wtx.IsCoinBase())
@@ -61,12 +54,7 @@ QList<TransactionRecord> TransactionRecord::decomposeTransaction(const CWallet *
                 sub.txcomment = txcomment;
                 sub.idx = parts.size(); // sequence number
                 sub.credit = txout.nValue;
-                if (wtx.IsCoinBase())
-                {
-                    // Generated
-                    sub.type = TransactionRecord::Generated;
-                }
-                else if (ExtractDestination(txout.scriptPubKey, address) && IsMine(*wallet, address))
+                if (ExtractDestination(txout.scriptPubKey, address) && IsMine(*wallet, address))
                 {
                     // Received by Bitcoin Address
                     sub.type = TransactionRecord::RecvWithAddress;
@@ -77,6 +65,11 @@ QList<TransactionRecord> TransactionRecord::decomposeTransaction(const CWallet *
                     // Received by IP connection (deprecated features), or a multisignature or other non-simple transaction
                     sub.type = TransactionRecord::RecvFromOther;
                     sub.address = mapValue["from"];
+                }
+                if (wtx.IsCoinBase())
+                {
+                    // Generated
+                    sub.type = TransactionRecord::Generated;
                 }
 
                 parts.append(sub);
@@ -180,12 +173,12 @@ void TransactionRecord::updateStatus(const CWalletTx &wtx)
     status.depth = wtx.GetDepthInMainChain();
     status.cur_num_blocks = nBestHeight;
 
-    if (!wtx.IsFinal())
+    if (!wtx.IsFinal(nBestHeight + 1))
     {
         if (wtx.nLockTime < LOCKTIME_THRESHOLD)
         {
             status.status = TransactionStatus::OpenUntilBlock;
-            status.open_for = nBestHeight - wtx.nLockTime;
+            status.open_for = wtx.nLockTime - nBestHeight;
         }
         else
         {
